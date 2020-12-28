@@ -21,11 +21,17 @@
             console.log('Se perdió comunicación con el Servidor');
         });
 
-        socket.emit('mensaje', {nombre: 'Keny'});
+        socket.emit('mensaje', {user: 'Keny-Computadora'});
 
         socket.on('mensaje', function(payload){
             console.log('escuchando:', payload);
         });
+
+        socket.on('active-bands', function(bands){
+            console.clear();
+            console.table(bands);
+        });
+
     </script>
 </body>
 </html>
