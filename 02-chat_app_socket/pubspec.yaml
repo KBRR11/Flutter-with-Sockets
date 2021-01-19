@@ -32,6 +32,9 @@ dependencies:
   curved_navigation_bar: ^0.3.7
   animate_do: ^1.7.5
   pull_to_refresh: ^1.6.3
+  http: ^0.12.2
+  sweetalert: ^0.0.1
+  flutter_secure_storage: ^3.3.5
   
 
 dev_dependencies:

@@ -7,6 +7,7 @@ class TextFieldCustomized extends StatelessWidget {
   final TextEditingController textController;
   final TextInputType keyboardType;
   final bool isPassword;
+  final Function onChanged;
 
   const TextFieldCustomized(
       {Key key,
@@ -14,7 +15,9 @@ class TextFieldCustomized extends StatelessWidget {
       @required this.icon,
       @required this.textController,
       this.keyboardType = TextInputType.text,
-      this.isPassword = false})
+      this.isPassword = false,
+      this.onChanged
+      })
       : super(key: key);
 
   @override
@@ -33,6 +36,7 @@ class TextFieldCustomized extends StatelessWidget {
             ]),
         child: TextField(
           controller: textController,
+          onChanged: onChanged,
           style: TextStyle(fontFamily: 'GlegooRegular'),
           autocorrect: false,
           keyboardType: keyboardType,

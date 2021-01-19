@@ -1,10 +1,13 @@
+import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/scroll_service.dart';
+import 'package:chat_app_socket/services/validator_service.dart';
 import 'package:chat_app_socket/widgets/fondo.dart';
 import 'package:chat_app_socket/widgets/logo.dart';
 import 'package:chat_app_socket/widgets/raised_button.dart';
 import 'package:chat_app_socket/widgets/textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sweetalert/sweetalert.dart';
 
 class LoginPage extends StatelessWidget {
   //const LoginPage({Key key}) : super(key: key);
@@ -52,13 +55,22 @@ class LoginForm extends StatelessWidget {
   }
 }
 
-class __Form extends StatelessWidget {
+class __Form extends StatefulWidget {
+  @override
+  ___FormState createState() => ___FormState();
+}
+
+class ___FormState extends State<__Form> {
   final emailCtrl = TextEditingController();
+
   final passCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final scrollService = Provider.of<ScrollService>(context);
+    final authService = Provider.of<AuthService>(context);
+    final validatorService = Provider.of<ValidatorService>(context);
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0),
       width: MediaQuery.of(context).size.width,
@@ -70,24 +82,65 @@ class __Form extends StatelessWidget {
             icon: Icons.mail_outline,
             placeholder: 'Correo',
             textController: emailCtrl,
+            onChanged: (text) {
+              if (text.toString().length > 0) {
+                setState(() {
+                  validatorService.emailValidator = true;
+                });
+              } else {
+                setState(() {
+                  validatorService.emailValidator = false;
+                });
+              }
+            },
             keyboardType: TextInputType.emailAddress,
           ),
           TextFieldCustomized(
             icon: Icons.lock_outline,
             placeholder: 'Contraseña',
             textController: passCtrl,
+            onChanged: (text) {
+              if (text.toString().length > 0) {
+                setState(() {
+                  validatorService.passValidator = true;
+                });
+              } else {
+                setState(() {
+                  validatorService.passValidator = false;
+                });
+              }
+            },
             isPassword: true,
           ),
           RaisedPersonalizado(
             backgroundColor: Color.fromRGBO(66, 141, 255, 1),
             fontFamiliy: 'GlegooRegular',
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, 'menu');
+            onPressed: validatorService.canLogin
+                ? authService.autenticando
+                    ? null
+                    : () async {
+                        //Navigator.pushReplacementNamed(context, 'menu');
+                        FocusScope.of(context).unfocus();
+                        final loginOk = await authService.login(
+                            emailCtrl.text.trim(), passCtrl.text.trim());
+                        if (loginOk) {
+                          emailCtrl.clear();
+                          passCtrl.clear();
+                          Navigator.pushReplacementNamed(context, 'menu');
 
-              print(emailCtrl.text);
-              print(passCtrl.text);
-              //emailCtrl.clear();
-            },
+                          SweetAlert.show(context,
+                              title: 'Bienvenido',
+                              style: SweetAlertStyle.success);
+                        } else {
+                          SweetAlert.show(context,
+                              title: 'Incorrecto',
+                              subtitle: 'Usuario y/o Contraseña incorrectos.',
+                              style: SweetAlertStyle.error);
+                        }
+                        //emailCtrl.clear();
+                        //passCtrl.clear();
+                      }
+                : null,
             text: 'Ingresar',
             textColor: Colors.white,
             weight: FontWeight.bold,
