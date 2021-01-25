@@ -1,3 +1,4 @@
+import 'package:chat_app_socket/pages/config_user.dart';
 import 'package:chat_app_socket/pages/usuarios_page.dart';
 import 'package:chat_app_socket/services/scroll_service.dart';
 import 'package:flutter/material.dart';
@@ -12,17 +13,20 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int _page = 0;
+  
   GlobalKey _bottomNavigationKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
+    
+    //bool origen = ModalRoute.of(context).settings.arguments;
+    int _page = 0;
     final scrollService = Provider.of<ScrollService>(context);
     return Scaffold(
         
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
-          index: 0,
+          index: 0,//TODO: se borra el bool : revisar Bug
           height: 50.0,
           items: <Widget>[
             Icon(
@@ -42,14 +46,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
             ),
           ],
           color: Color.fromRGBO(24, 121, 153, 1),
-          buttonBackgroundColor: Color.fromRGBO(13, 160, 154, 1),
+          buttonBackgroundColor: Colors.yellow[600],//Color.fromRGBO(13, 160, 154, 1)
           backgroundColor: Colors.white,
           animationCurve: Curves.easeInOut,
           animationDuration: Duration(milliseconds: 600),
           onTap: (index) {
             setState(() {
               _page = index;
-              scrollService.controllerIn.animateToPage(_page,
+              scrollService.controllerLogin.animateToPage(_page,
                   duration: Duration(milliseconds: 500),
                   curve: Curves.easeInToLinear);
             });
@@ -57,7 +61,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           letIndexChange: (index) => true,
         ),
         body: PageView(
-          controller: scrollService.controllerIn,
+          controller: scrollService.controllerLogin,
+          
           children: [
             UsuariosPage(),
             Container(
@@ -67,14 +72,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 child: Center(
                   child: Text('page 1'),
                 )),
-            Container(
-              width: double.infinity,
-              height: double.infinity,
-              color: Colors.white,
-              child: Center(
-                child: Text('page 2'),
-              ),
-            )
+            ConfigUsuario()
           ],
         ));
   }

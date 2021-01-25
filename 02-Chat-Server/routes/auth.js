@@ -4,7 +4,7 @@ Path: /api/login'
 
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { crearUsuario , loginUsuario, renewToken} = require('../controllers/auth');
+const { crearUsuario , loginUsuario, renewToken, updatePhoto} = require('../controllers/auth');
 
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarToken } = require('../middlewares/validar-jwt');
@@ -31,6 +31,13 @@ router.post('/', [
     );
 
 router.get('/renewtkn', validarToken ,renewToken);
+
+router.put('/updatefoto', [
+    check('uid', 'id es un campo requerido').not().isEmpty(),
+    check('uid', 'no es un UiD válido').isLength({min:24}),
+    check('fotoUrl', 'fotoUrl es un campo obligatorio').not().isEmpty(),
+    validarCampos
+], updatePhoto);
 
 
 module.exports = router;

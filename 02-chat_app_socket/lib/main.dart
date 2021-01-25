@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Messenger',
-        initialRoute: 'scroll',
+        initialRoute: 'loading',/*'scroll',*/
         routes: appRoutes,
       ),
     );

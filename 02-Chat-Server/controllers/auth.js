@@ -27,7 +27,7 @@ const crearUsuario = async (req, res = response) => {
 
     //Generar JWT para autenticar nuevo usuario
 
-    const token = await generarJWT(usuario.id, usuario.nombre, usuario.email ); 
+    const token = await generarJWT(usuario.id, usuario.nombre, usuario.email, usuario.fotoUrl ); 
 
     res.json({
       ok: true,
@@ -68,7 +68,7 @@ const loginUsuario = async (req, res = response) => {
       });
     }
     //Generar JWT al pasar validaciones
-    const token = await generarJWT(usuarioDB.id, usuarioDB.nombre, usuarioDB.email);
+    const token = await generarJWT(usuarioDB.id, usuarioDB.nombre, usuarioDB.email, usuarioDB.fotoUrl);
 
     res.json({
       ok: true,
@@ -95,7 +95,8 @@ const uid = req.uid;
 
 const usuarioTokenRenew = await Usuario.findById(uid);
 
-const token = await generarJWT(usuarioTokenRenew.id, usuarioTokenRenew.nombre, usuarioTokenRenew.email );
+
+const token = await generarJWT(usuarioTokenRenew.id, usuarioTokenRenew.nombre, usuarioTokenRenew.email , usuarioTokenRenew.fotoUrl);
 
 
 
@@ -107,8 +108,39 @@ const token = await generarJWT(usuarioTokenRenew.id, usuarioTokenRenew.nombre, u
      });
 }
 
+const updatePhoto = async(req, res=response)=>{
+  const { uid , fotoUrl} = req.body;
+  try{
+    const usuariovalidate = await Usuario.findById({_id:uid});
+    if (!usuariovalidate) {
+      return res.status(404).json({
+        ok: false,
+        msg: 'Este usuario no fue encontrado o talvez fue eliminado, hable con el administrador'
+      });
+    }
+    
+   await Usuario.updateOne({_id:uid}, {fotoUrl});
+   const userupd = await Usuario.findOne({fotoUrl});
+   const token = await generarJWT(userupd.id, userupd.nombre, userupd.email , userupd.fotoUrl);
+   res.json({
+    ok: true,
+    msg: "Photo Updated",
+    usuario: userupd,
+    token:token
+  });
+  }catch{
+    console.log(error);
+    return res.status(500).json({
+      ok: true,
+      msg: "Hable con el Admin!",
+      
+    });
+  }
+}
+
 module.exports = {
   crearUsuario,
   loginUsuario,
-  renewToken
+  renewToken,
+  updatePhoto
 };

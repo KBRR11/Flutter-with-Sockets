@@ -35,6 +35,10 @@ dependencies:
   http: ^0.12.2
   sweetalert: ^0.0.1
   flutter_secure_storage: ^3.3.5
+  full_screen_image: ^1.0.2 
+  image_picker: ^0.6.7+21
+  modal_bottom_sheet: ^1.0.0+1
+  mime_type: ^0.3.2
   
 
 dev_dependencies:

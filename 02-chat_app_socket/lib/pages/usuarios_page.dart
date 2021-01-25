@@ -190,7 +190,7 @@ class UsuariosPage extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushReplacementNamed(context, 'chat'),
+            onTap: () => Navigator.pushNamed(context, 'chat'),
             child: ListTile(
               tileColor: Colors.white,
               leading: CircleAvatar(

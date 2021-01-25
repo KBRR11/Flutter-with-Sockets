@@ -64,12 +64,23 @@ class ___FormState extends State<__Form> {
   final emailCtrl = TextEditingController();
 
   final passCtrl = TextEditingController();
+  
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailCtrl.dispose();
+    passCtrl.dispose();
+    
+  }
 
   @override
   Widget build(BuildContext context) {
     final scrollService = Provider.of<ScrollService>(context);
     final authService = Provider.of<AuthService>(context);
     final validatorService = Provider.of<ValidatorService>(context);
+
+    
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0),
@@ -85,11 +96,11 @@ class ___FormState extends State<__Form> {
             onChanged: (text) {
               if (text.toString().length > 0) {
                 setState(() {
-                  validatorService.emailValidator = true;
+                  validatorService.emailLoginValidator = true;
                 });
               } else {
                 setState(() {
-                  validatorService.emailValidator = false;
+                  validatorService.emailLoginValidator = false;
                 });
               }
             },
@@ -102,11 +113,11 @@ class ___FormState extends State<__Form> {
             onChanged: (text) {
               if (text.toString().length > 0) {
                 setState(() {
-                  validatorService.passValidator = true;
+                  validatorService.passLoginValidator = true;
                 });
               } else {
                 setState(() {
-                  validatorService.passValidator = false;
+                  validatorService.passLoginValidator = false;
                 });
               }
             },
@@ -150,6 +161,7 @@ class ___FormState extends State<__Form> {
           ),
           RawMaterialButton(
             onPressed: () {
+              FocusScope.of(context).unfocus();
               scrollService.controller.animateToPage(1,
                   duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
             },

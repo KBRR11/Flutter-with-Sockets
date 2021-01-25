@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 
 class ScrollService with ChangeNotifier {
   PageController _controller = PageController(initialPage: 1);
-  PageController _controllerIn = PageController(initialPage: 0);
+  PageController _controllerLogin = PageController(initialPage: 0);
+  PageController _controllerregister = PageController(initialPage: 2);
 
-  // @override
-  // void initState() {
-  //
-  // }
+  
 
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
-    _controllerIn.dispose();
+    _controllerLogin.dispose();
   }
 
   PageController get controller => this._controller;
-  PageController get controllerIn => this._controllerIn;
+  PageController get controllerLogin => this._controllerLogin;
+  PageController get controllerRegister => this._controllerregister;
+
+  
 }

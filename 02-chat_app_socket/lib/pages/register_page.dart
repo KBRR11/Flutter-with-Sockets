@@ -1,10 +1,13 @@
+import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/scroll_service.dart';
+import 'package:chat_app_socket/services/validator_service.dart';
 import 'package:chat_app_socket/widgets/fondo.dart';
 import 'package:chat_app_socket/widgets/logo.dart';
 import 'package:chat_app_socket/widgets/raised_button.dart';
 import 'package:chat_app_socket/widgets/textField.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sweetalert/sweetalert.dart';
 
 class RegisterPage extends StatelessWidget {
   //const RegisterPage({Key key}) : super(key: key);
@@ -46,14 +49,23 @@ class RegisterForm extends StatelessWidget {
   }
 }
 
-class __Form extends StatelessWidget {
+class __Form extends StatefulWidget {
+  @override
+  ___FormState createState() => ___FormState();
+}
+
+class ___FormState extends State<__Form> {
   final nameCtrl = TextEditingController();
+
   final emailCtrl = TextEditingController();
+
   final passCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     final scrollService = Provider.of<ScrollService>(context);
+    final validatorService = Provider.of<ValidatorService>(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0),
       width: MediaQuery.of(context).size.width,
@@ -65,32 +77,86 @@ class __Form extends StatelessWidget {
             icon: Icons.account_circle_outlined,
             placeholder: 'Nombre',
             textController: nameCtrl,
+            onChanged: (text) {
+              if (text.toString().length > 0) {
+                setState(() {
+                  validatorService.nameRegisterValidator = true;
+                });
+              } else {
+                setState(() {
+                  validatorService.nameRegisterValidator = false;
+                });
+              }
+            },
             keyboardType: TextInputType.emailAddress,
           ),
           TextFieldCustomized(
             icon: Icons.mail_outline,
             placeholder: 'Correo',
             textController: emailCtrl,
+            onChanged:(text) {
+              if (text.toString().length > 0) {
+                setState(() {
+                  validatorService.emailRegisterValidator = true;
+                });
+              } else {
+                setState(() {
+                  validatorService.emailRegisterValidator = false;
+                });
+              }
+              } ,
             keyboardType: TextInputType.emailAddress,
           ),
           TextFieldCustomized(
             icon: Icons.lock_outline,
             placeholder: 'Contraseña',
             textController: passCtrl,
+            onChanged: (text) {
+              if (text.toString().length > 0) {
+                setState(() {
+                  validatorService.passRegisterValidator = true;
+                });
+              } else {
+                setState(() {
+                  validatorService.passRegisterValidator = false;
+                });
+              }
+              } ,
             isPassword: true,
           ),
           RaisedPersonalizado(
             backgroundColor: Color.fromRGBO(66, 141, 255, 1),
             fontFamiliy: 'GlegooRegular',
-            onPressed: () {
-              //scrollService.controller.animateToPage(0,
-              //    duration: Duration(seconds: 1),
-              //    curve: Curves.fastOutSlowIn);
-              print(nameCtrl.text);
-              print(emailCtrl.text);
-              print(passCtrl.text);
-              //emailCtrl.clear();
-            },
+            onPressed: validatorService.canRegister?
+            authService.autenticando
+                    ? null
+                    :
+            () async {
+              
+              FocusScope.of(context).unfocus();
+              final registerOk = await authService.register(
+                  nameCtrl.text.trim(),
+                  emailCtrl.text.trim(),
+                  passCtrl.text.trim());
+              if (registerOk==true) {
+                Navigator.pushReplacementNamed(context, 'menu');
+                SweetAlert.show(context,
+                    title: 'Bienvenido',
+                    subtitle: nameCtrl.text.trim(),
+                    style: SweetAlertStyle.success);
+                    nameCtrl.clear();
+                    emailCtrl.clear();
+                    passCtrl.clear();
+              } else {
+                SweetAlert.show(context,
+                    title: 'Incorrecto',
+                    subtitle: registerOk,
+                    style: SweetAlertStyle.error);
+              }
+
+              
+            }
+            :null,
             text: 'Registrar',
             textColor: Colors.white,
             weight: FontWeight.bold,
@@ -102,6 +168,7 @@ class __Form extends StatelessWidget {
             onPressed: () {
               scrollService.controller.animateToPage(1,
                   duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn);
+              FocusScope.of(context).unfocus();
             },
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
