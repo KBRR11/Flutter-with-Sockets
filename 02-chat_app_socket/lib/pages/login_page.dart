@@ -1,5 +1,6 @@
 import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/scroll_service.dart';
+import 'package:chat_app_socket/services/socket_service.dart';
 import 'package:chat_app_socket/services/validator_service.dart';
 import 'package:chat_app_socket/widgets/fondo.dart';
 import 'package:chat_app_socket/widgets/logo.dart';
@@ -79,7 +80,7 @@ class ___FormState extends State<__Form> {
     final scrollService = Provider.of<ScrollService>(context);
     final authService = Provider.of<AuthService>(context);
     final validatorService = Provider.of<ValidatorService>(context);
-
+    final socketService = Provider.of<SocketService>(context, listen: false);
     
 
     return Container(
@@ -135,6 +136,7 @@ class ___FormState extends State<__Form> {
                         final loginOk = await authService.login(
                             emailCtrl.text.trim(), passCtrl.text.trim());
                         if (loginOk) {
+                          socketService.connect(emailCtrl.text.trim().toString());
                           emailCtrl.clear();
                           passCtrl.clear();
                           Navigator.pushReplacementNamed(context, 'menu');

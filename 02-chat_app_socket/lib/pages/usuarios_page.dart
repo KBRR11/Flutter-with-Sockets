@@ -1,6 +1,8 @@
+import 'package:chat_app_socket/services/socket_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:chat_app_socket/models/usuario.dart';
@@ -235,7 +237,7 @@ class _CrearAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //TODO: hacer animacions de letras AnimateDo
-
+final socketService = Provider.of<SocketService>(context);
     return SliverAppBar(
         backgroundColor: Colors.white,
         elevation: 0.0,
@@ -261,13 +263,23 @@ class _CrearAppBar extends StatelessWidget {
         ],
         flexibleSpace: FlexibleSpaceBar(
           titlePadding: EdgeInsets.only(left: 30, bottom: 12),
-          title: Text(
-            'Messages',
-            style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'Rubik',
-                fontWeight: FontWeight.w600,
-                fontSize: 29),
+          title: Row(
+            children: [
+              FadeInDown(
+                              child: Text(
+                  'Messages',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Rubik',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 29),
+                ),
+              ),
+              SizedBox(width: 5,),
+               FadeInUp(
+                 
+                 child: Icon(socketService.iconStatus, color: socketService.colorIcono,))
+            ],
           ),
         ));
   }

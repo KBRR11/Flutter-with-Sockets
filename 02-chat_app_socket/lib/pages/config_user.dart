@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app_socket/services/auth_service.dart';
+import 'package:chat_app_socket/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -217,6 +218,7 @@ class _ConfigUsuarioState extends State<ConfigUsuario> {
 
   _infoEdit(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     final usuario = authService.usuario;
     return Column(
       children: [
@@ -288,7 +290,9 @@ class _ConfigUsuarioState extends State<ConfigUsuario> {
         ),
         ListTile(
           onTap: () {
+            socketService.disconnect();
             AuthService.deleteToken();
+            
             Navigator.pushReplacementNamed(context, 'scroll');
           },
           leading: Icon(Icons.logout,

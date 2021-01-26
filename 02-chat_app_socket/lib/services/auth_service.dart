@@ -40,6 +40,7 @@ class AuthService with ChangeNotifier {
     await _storage.delete(key: 'token');
    
   }
+  
 
   Future<bool> login(String email, String password) async {
     this.autenticando = true;

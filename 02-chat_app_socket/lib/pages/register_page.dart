@@ -1,5 +1,6 @@
 import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/scroll_service.dart';
+import 'package:chat_app_socket/services/socket_service.dart';
 import 'package:chat_app_socket/services/validator_service.dart';
 import 'package:chat_app_socket/widgets/fondo.dart';
 import 'package:chat_app_socket/widgets/logo.dart';
@@ -66,6 +67,7 @@ class ___FormState extends State<__Form> {
     final authService = Provider.of<AuthService>(context);
     final scrollService = Provider.of<ScrollService>(context);
     final validatorService = Provider.of<ValidatorService>(context);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0),
       width: MediaQuery.of(context).size.width,
@@ -139,6 +141,7 @@ class ___FormState extends State<__Form> {
                   emailCtrl.text.trim(),
                   passCtrl.text.trim());
               if (registerOk==true) {
+                socketService.connect(emailCtrl.text.trim().toString());
                 Navigator.pushReplacementNamed(context, 'menu');
                 SweetAlert.show(context,
                     title: 'Bienvenido',
