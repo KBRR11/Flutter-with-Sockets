@@ -1,7 +1,7 @@
 // To parse this JSON data, do
 //
 //     final loginResponse = loginResponseFromJson(jsonString);
-
+//hola
 import 'dart:convert';
 
 import 'package:chat_app_socket/models/usuario.dart';
