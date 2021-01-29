@@ -68,10 +68,9 @@ class SocketService with ChangeNotifier {
       this._colorIcono = Colors.red;
       notifyListeners();
     });
-   //Timer(Duration(milliseconds: 500), (){
+  
 this._socket.emit('userConnected', 'funciona');
-//print('me demoré 2 segundos');
-  // });
+
     
     
     

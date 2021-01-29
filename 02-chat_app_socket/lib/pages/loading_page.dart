@@ -37,8 +37,5 @@ class LoadingPage extends StatelessWidget {
     }
   }
 
- // Future emitEvent(BuildContext context){
- //   final socketService = Provider.of<SocketService>(context, listen: false);
- //   socketService.socket.emit('userConnected','funciona');
- // }
+ 
 }

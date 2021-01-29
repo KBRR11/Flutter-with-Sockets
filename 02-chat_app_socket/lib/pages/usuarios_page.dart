@@ -83,8 +83,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   SliverList _userSliverList(BuildContext context) {
      final usuariosService = Provider.of<UsuariosService>(context);   
-        //refreshListUser(); // hace un bucle y sigue llamando muchas veces esta instrucción: falso socket
-       // socketRefresh();
+        //refreshListUser(); // hace un bucle : falso socket
+      
     return SliverList(
       delegate: SliverChildBuilderDelegate((_, i) {
         return _userListTile(context, usuariosService.usuarios[i], i);
@@ -97,15 +97,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
         await usuariosService.refreshList();
   }
 
- // socketRefresh(){
- //   final socketService = Provider.of<SocketService>(context);
- //   if(socketService.refresh){
- //    refreshListUser();
- //    socketService.refresh=false;
- //   }else{
-//
- //   }
- // }
+ 
 
   FadeInLeft _userListTile(BuildContext context, Usuario usuario, int i) {
     return FadeInLeft(
