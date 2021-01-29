@@ -41,4 +41,4 @@ app.*.symbols
 app.*.map.json
 
 # enviroments globals
-/lib/global/enviroment.dart
+lib/global/enviroment.dart
