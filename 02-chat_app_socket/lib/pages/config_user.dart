@@ -290,7 +290,9 @@ class _ConfigUsuarioState extends State<ConfigUsuario> {
         ),
         ListTile(
           onTap: () {
+            socketService.socket.emit('userConnected','desconectado');//TODO: ver la forma de retrasar el socket en el server
             socketService.disconnect();
+            
             AuthService.deleteToken();
             
             Navigator.pushReplacementNamed(context, 'scroll');
@@ -335,10 +337,12 @@ class _ConfigUsuarioState extends State<ConfigUsuario> {
 
   void submit() async {
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     final ok = await authService.subirImagen(_image);
     if (ok) {
       SweetAlert.show(context,
           title: 'Actualizado', style: SweetAlertStyle.success);
+          socketService.socket.emit('userConnected', 'funciona');
     } else {
       SweetAlert.show(context,
           title: 'Error',

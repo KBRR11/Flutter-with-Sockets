@@ -1,3 +1,4 @@
+import 'package:chat_app_socket/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MessagesService()),
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => SocketService()),
+        ChangeNotifierProvider(create: (_) => UsuariosService()),
+        
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

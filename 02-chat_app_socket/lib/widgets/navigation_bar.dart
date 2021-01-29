@@ -26,7 +26,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         
         bottomNavigationBar: CurvedNavigationBar(
           key: _bottomNavigationKey,
-          index: 0,//TODO: se borra el bool : revisar Bug
+          index: 0,
           height: 50.0,
           items: <Widget>[
             Icon(
@@ -52,6 +52,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           animationDuration: Duration(milliseconds: 600),
           onTap: (index) {
             setState(() {
+              
               _page = index;
               scrollService.controllerLogin.animateToPage(_page,
                   duration: Duration(milliseconds: 500),

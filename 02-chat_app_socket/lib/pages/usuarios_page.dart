@@ -1,4 +1,6 @@
+import 'package:chat_app_socket/services/messages_service.dart';
 import 'package:chat_app_socket/services/socket_service.dart';
+import 'package:chat_app_socket/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:animate_do/animate_do.dart';
@@ -7,144 +9,41 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:chat_app_socket/models/usuario.dart';
 
-class UsuariosPage extends StatelessWidget {
+class UsuariosPage extends StatefulWidget {
+  @override
+  _UsuariosPageState createState() => _UsuariosPageState();
+}
+
+class _UsuariosPageState extends State<UsuariosPage> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+      
+@override
+  void initState() {
+    final socketService = Provider.of<SocketService>(context, listen: false);
+    
+    socketService.socket.on('refresh', (data) {
 
-  final usuarios = [
-    Usuario(
-        online: true,
-        nombre: 'Klever Vazcones',
-        email: 'Klevery@gmail.com',
-        uid: '1'),
-    Usuario(
-        online: true,
-        nombre: 'Pedro Ramírez',
-        email: 'pedrito@gmail.com',
-        uid: '2'),
-    Usuario(
-        online: false,
-        nombre: 'Gabriel Cosi',
-        email: 'gabito@gmail.com',
-        uid: '3'),
-    Usuario(
-        online: false,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: false,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: false,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: false,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: false,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-    Usuario(
-        online: true,
-        nombre: 'Isabela Reiban',
-        email: 'isabelita@gmail.com',
-        uid: '4'),
-  ];
+      setState(() {
+      //print('me actualizo');
+      refreshListUser();        
+      });
+    });
+    refreshListUser();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    
+    
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    //final usuariosService = Provider.of<UsuariosService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -165,7 +64,11 @@ class UsuariosPage extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async{
+          //await usuariosService.refreshList();
+         
+         
+        },
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -179,12 +82,30 @@ class UsuariosPage extends StatelessWidget {
   }
 
   SliverList _userSliverList(BuildContext context) {
+     final usuariosService = Provider.of<UsuariosService>(context);   
+        //refreshListUser(); // hace un bucle y sigue llamando muchas veces esta instrucción: falso socket
+       // socketRefresh();
     return SliverList(
       delegate: SliverChildBuilderDelegate((_, i) {
-        return _userListTile(context, usuarios[i], i);
-      }, childCount: usuarios.length),
+        return _userListTile(context, usuariosService.usuarios[i], i);
+      }, childCount: usuariosService.usuarios.length),
     );
   }
+
+  refreshListUser()async{
+    final usuariosService = Provider.of<UsuariosService>(context, listen: false);   
+        await usuariosService.refreshList();
+  }
+
+ // socketRefresh(){
+ //   final socketService = Provider.of<SocketService>(context);
+ //   if(socketService.refresh){
+ //    refreshListUser();
+ //    socketService.refresh=false;
+ //   }else{
+//
+ //   }
+ // }
 
   FadeInLeft _userListTile(BuildContext context, Usuario usuario, int i) {
     return FadeInLeft(
@@ -192,7 +113,12 @@ class UsuariosPage extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, 'chat'),
+            onTap: () {
+            final messageService = Provider.of<MessagesService>(context, listen:false);
+            messageService.usuarioPara = usuario;  
+            Navigator.pushNamed(context, 'chat');
+
+            }, 
             child: ListTile(
               tileColor: Colors.white,
               leading: CircleAvatar(
@@ -205,8 +131,9 @@ class UsuariosPage extends StatelessWidget {
                     width: 56,
                     fit: BoxFit.cover,
                     placeholder: AssetImage('assets/preload.gif'),
-                    image:
-                        NetworkImage('https://picsum.photos/500/300/?image=$i'),
+                    image:(usuario.fotoUrl=='')
+                       ? AssetImage('assets/usuario.png')
+                       :NetworkImage(usuario.fotoUrl),
                   ),
                 ),
               ),
@@ -236,7 +163,7 @@ class UsuariosPage extends StatelessWidget {
 class _CrearAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //TODO: hacer animacions de letras AnimateDo
+    
 final socketService = Provider.of<SocketService>(context);
     return SliverAppBar(
         backgroundColor: Colors.white,

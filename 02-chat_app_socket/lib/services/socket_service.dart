@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:chat_app_socket/services/auth_service.dart';
+import 'package:chat_app_socket/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_app_socket/global/enviroment.dart';
+
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -12,14 +16,22 @@ class SocketService with ChangeNotifier {
   IconData _iconStatus = Icons.cloud_queue;
   Color _colorIcono = Colors.yellow[700];
   IO.Socket _socket;
+  UsuariosService usuarioService ;
+
+  //bool _refresh = false;
+//
+  //bool get refresh => this._refresh; 
+  //set refresh (bool valor){
+  //this._refresh = valor;
+  //notifyListeners();
+  //}
 
   ServerStatus get serverStatus => this._serverStatus;
   IconData get iconStatus => this._iconStatus;
   Color get colorIcono => this._colorIcono;
   IO.Socket get socket => this._socket;
 
-  
-
+ 
   void connect(String userEmail) async{
     // Dart client
    final token =  await AuthService.getToken();
@@ -56,11 +68,17 @@ class SocketService with ChangeNotifier {
       this._colorIcono = Colors.red;
       notifyListeners();
     });
-
-    this._socket.emit('mensaje', {'user': 'mobile'});
+   //Timer(Duration(milliseconds: 500), (){
+this._socket.emit('userConnected', 'funciona');
+//print('me demoré 2 segundos');
+  // });
+    
+    
+    
+    
   }
 
-
+  
   void disconnect(){
     this._socket.disconnect();
   }

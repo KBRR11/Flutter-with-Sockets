@@ -80,7 +80,8 @@ const loginUsuario = async (req, res = response) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({
-      ok: true,
+      ok: false,
+      error:error,
       msg: "Hable con el Admin!",
       
     });

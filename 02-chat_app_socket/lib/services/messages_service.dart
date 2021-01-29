@@ -1,8 +1,10 @@
+import 'package:chat_app_socket/models/usuario.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chat_app_socket/widgets/message_bubble.dart';
 
 class MessagesService extends ChangeNotifier {
+  Usuario usuarioPara;
   List<MessageBubble> _messageBubble = [];
   AnimationController _animationController;
 

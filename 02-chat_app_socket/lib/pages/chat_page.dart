@@ -172,6 +172,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final messagesService = Provider.of<MessagesService>(context);
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.08,
       child: Container(
@@ -183,7 +184,7 @@ class Header extends StatelessWidget {
             RawMaterialButton(
               shape: CircleBorder(),
               onPressed: () {
-                Navigator.pushReplacementNamed(context, 'menu');
+                Navigator.pop(context, 'menu');
               },
               child: Container(
                   width: 50,
@@ -192,7 +193,7 @@ class Header extends StatelessWidget {
                   child: Icon(Icons.arrow_back, color: Colors.black54)),
             ),
             Text(
-              'Shane Martinez',
+              messagesService.usuarioPara.nombre,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   fontSize: 20,
@@ -206,7 +207,7 @@ class Header extends StatelessWidget {
                   child:
                       Icon(Icons.info_outline_rounded, color: Colors.black54)),
               shape: CircleBorder(),
-              onPressed: () {},
+              onPressed: () {},//TODO: hacer page info de Usurario y navegación 
             )
           ],
         ),

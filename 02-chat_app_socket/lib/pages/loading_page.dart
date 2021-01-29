@@ -9,7 +9,7 @@ class LoadingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(//TODO: hacer un splashScreen bonito
       body: FutureBuilder(
         future:checkLoginState(context), 
         builder: (context, snapshot){
@@ -26,13 +26,19 @@ class LoadingPage extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final socketService = Provider.of<SocketService>(context, listen: false);
     final bool autenticado = await authService.isLoggedIn();
+      
 
     if (autenticado) {
       socketService.connect(authService.usuario.email);
+      //emitEvent(context);
       Navigator.pushReplacementNamed(context, 'menu');
-    
     } else {
       Navigator.pushReplacementNamed(context, 'scroll');
     }
   }
+
+ // Future emitEvent(BuildContext context){
+ //   final socketService = Provider.of<SocketService>(context, listen: false);
+ //   socketService.socket.emit('userConnected','funciona');
+ // }
 }

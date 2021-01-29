@@ -65,14 +65,13 @@ class ___FormState extends State<__Form> {
   final emailCtrl = TextEditingController();
 
   final passCtrl = TextEditingController();
-  
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     emailCtrl.dispose();
     passCtrl.dispose();
-    
   }
 
   @override
@@ -81,7 +80,6 @@ class ___FormState extends State<__Form> {
     final authService = Provider.of<AuthService>(context);
     final validatorService = Provider.of<ValidatorService>(context);
     final socketService = Provider.of<SocketService>(context, listen: false);
-    
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 50.0),
@@ -135,8 +133,10 @@ class ___FormState extends State<__Form> {
                         FocusScope.of(context).unfocus();
                         final loginOk = await authService.login(
                             emailCtrl.text.trim(), passCtrl.text.trim());
+
                         if (loginOk) {
                           socketService.connect(emailCtrl.text.trim().toString());
+                          //socketService.socket.emit('userConnected','funciona');    
                           emailCtrl.clear();
                           passCtrl.clear();
                           Navigator.pushReplacementNamed(context, 'menu');

@@ -39,3 +39,6 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# enviroments globals
+/lib/global/enviroment.dart
