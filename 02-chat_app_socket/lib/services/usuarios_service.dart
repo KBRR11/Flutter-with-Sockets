@@ -1,5 +1,5 @@
 
-import 'package:chat_app_socket/global/enviroment.dart';
+import 'package:chat_app_socket/global/local_enviroment.dart';
 import 'package:chat_app_socket/models/usuarios_response.dart';
 import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:http/http.dart' as http;

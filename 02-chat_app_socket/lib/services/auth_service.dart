@@ -9,7 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http_parser/http_parser.dart';
 
-import 'package:chat_app_socket/global/enviroment.dart';
+import 'package:chat_app_socket/global/local_enviroment.dart';
 
 class AuthService with ChangeNotifier {
   Usuario _usuario;

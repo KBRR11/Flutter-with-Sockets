@@ -1,6 +1,6 @@
 const { comprobarJWT } = require('../helpers/jwt');
 const { io } = require('../index');
-const { usuarioConectado, usuarioDesconectado } = require('../controllers/socket');
+const { usuarioConectado, usuarioDesconectado, grabarMensaje } = require('../controllers/socket');
 const { getUsuarios } = require('../controllers/usuarios');
 
 
@@ -35,8 +35,13 @@ io.on('connection', client => {
     
     // ingresar al usuario a una sala en particular 
     // sala globlal, client.id, id de usuarioMongo
-    //client.join( uid );
-
+    client.join( uid );
+    // Escuchar del cliente el mensaje-personal
+    client.on('mensaje-personal', async(payload)=>{
+      //TODO: Grabar mensaje en DB
+      await grabarMensaje( payload );
+      io.to(payload.para).emit('mensaje-personal', payload);
+    });
 
     client.on('disconnect', () => {
         console.log('Cliente desconectado');

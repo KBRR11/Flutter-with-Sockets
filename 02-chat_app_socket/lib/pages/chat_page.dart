@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:chat_app_socket/models/mensajes_response.dart';
+import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/messages_service.dart';
+import 'package:chat_app_socket/services/socket_service.dart';
 import 'package:chat_app_socket/services/validator_service.dart';
-//import 'package:chat_app_socket/widgets/message_bubble.dart';
+import 'package:chat_app_socket/widgets/message_bubble.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +21,40 @@ class ChatPage extends StatefulWidget {
   _ChatPageState createState() => _ChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin{
+  SocketService socketService;
+  MessagesService messageService;
+  @override
+  void initState() {
+    super.initState();
+    this.messageService = Provider.of<MessagesService>(context, listen:false);
+    this.socketService = Provider.of<SocketService>(context, listen:false);
+    this.socketService.socket.on('mensaje-personal',_escucharMensaje);
+    _cargarHistorial(this.messageService.usuarioPara.uid);
+  }
+  @override
+  void dispose() {
+    this.socketService.socket.off('mensaje-personal');
+    this.messageService.messageBubble.clear();
+    super.dispose();
+  }
+  void _cargarHistorial(String usuarioID)async{
+   List<Mensaje> chat = await this.messageService.getChat(usuarioID);
+   print(chat);
+   final history = chat.map((m) => new MessageBubble(
+     texto: m.mensaje, uid: m.de, 
+     animationController: AnimationController(  duration: Duration(milliseconds: 0), vsync: this)..forward()));
+     setState(() {
+       this.messageService.messageBubble.insertAll(0, history);
+     });
+  }
+  void _escucharMensaje(dynamic payload){
+   messageService.addMessage(
+     payload['de'],
+     payload['mensaje'],
+     AnimationController(  duration: Duration(milliseconds: 400), vsync: this),
+);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +79,28 @@ class InputTextChat extends StatefulWidget {
 
 class _InputTextChatState extends State<InputTextChat>
     with TickerProviderStateMixin {
-  final _textController = new TextEditingController();
+  //final _textController = new TextEditingController();
 
   final _focusNode = new FocusNode();
-
+  MessagesService messageService;
+  SocketService socketService;
+  AuthService authService;
+  ValidatorService validatorServices;
+  
+@override
+  void initState() {
+    this.messageService = Provider.of<MessagesService>(context, listen:false);
+    this.messageService.textController.clear();
+    //this.validatorServices = Provider.of<ValidatorService>(context, listen:false);//TODO: arreglar bug de los validators
+    //this.validatorServices.escribiendoValidator(false);
+    this.socketService = Provider.of<SocketService>(context, listen:false);
+    this.authService = Provider.of<AuthService>(context, listen: false);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final validatorService = Provider.of<ValidatorService>(context);
+    //final messagesService = Provider.of<MessagesService>(context);
     return Container(
       color: Colors.white,
       width: MediaQuery.of(context).size.width,
@@ -64,7 +116,7 @@ class _InputTextChatState extends State<InputTextChat>
                 color: Color.fromRGBO(247, 248, 253, 1),
                 borderRadius: BorderRadius.circular(20)),
             child: TextField(
-              controller: _textController,
+              controller: this.messageService.textController,
               onSubmitted: (String texto) {
                 if (texto.trim().length > 0) {
                   _handleSubmit(context, texto);
@@ -98,7 +150,7 @@ class _InputTextChatState extends State<InputTextChat>
                     child: Text('Enviar'),
                     onPressed: validatorService.estaEscribiendo
                         ? () {
-                            _handleSubmit(context, _textController.text.trim());
+                            _handleSubmit(context, this.messageService.textController.text.trim());
                             validatorService.escribiendoValidator(false);
                           }
                         : null,
@@ -117,11 +169,19 @@ class _InputTextChatState extends State<InputTextChat>
   }
 
   _handleSubmit(BuildContext context, String texto) {
-    final messageService = Provider.of<MessagesService>(context, listen: false);
+    //final messageService = Provider.of<MessagesService>(context, listen: false);
+    //final authService = Provider.of<AuthService>(context, listen: false);
+    //print("de: "+authService.usuario.uid+"\npara: "+messageService.usuarioPara.uid+"\nmensaje: "+texto);
+    //print(texto.length);
+    this.socketService.socket.emit('mensaje-personal',{
+      'de':this.authService.usuario.uid,
+      'para': this.messageService.usuarioPara.uid,
+      'mensaje':texto
+    });
     _focusNode.requestFocus();
-    _textController.clear();
+    this.messageService.textController.clear();
     messageService.addMessage(
-        '123',
+        this.authService.usuario.uid,//TODO: Cambiar a Id de verdad
         texto,
         AnimationController(
             vsync: this, duration: Duration(milliseconds: 400)));
@@ -136,6 +196,18 @@ class BackgrounChat extends StatefulWidget {
 }
 
 class _BackgrounChatState extends State<BackgrounChat> {
+  //SocketService socketService;
+  //@override
+  //void initState() { 
+  //  this. socketService = Provider.of<SocketService>(context, listen: false);
+  //  this.socketService.socket.on('mensaje-personal', (payload) => _escucharMensaje(payload));
+  //  super.initState();
+  //  
+  //}
+  //void _escucharMensaje( dynamic payload){
+ //print('tengo mensaje');
+  //}
+
   @override
   Widget build(BuildContext context) {
     final messageService = Provider.of<MessagesService>(context);
@@ -173,6 +245,7 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final messagesService = Provider.of<MessagesService>(context);
+   
     return Positioned(
       top: MediaQuery.of(context).size.height * 0.08,
       child: Container(
@@ -184,6 +257,7 @@ class Header extends StatelessWidget {
             RawMaterialButton(
               shape: CircleBorder(),
               onPressed: () {
+                
                 Navigator.pop(context, 'menu');
               },
               child: Container(

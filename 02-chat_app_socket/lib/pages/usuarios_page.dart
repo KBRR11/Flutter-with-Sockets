@@ -17,10 +17,11 @@ class UsuariosPage extends StatefulWidget {
 class _UsuariosPageState extends State<UsuariosPage> {
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+      SocketService socketService;
       
 @override
   void initState() {
-    final socketService = Provider.of<SocketService>(context, listen: false);
+    this.socketService = Provider.of<SocketService>(context, listen: false);
     
     socketService.socket.on('refresh', (data) {
 
@@ -35,7 +36,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   @override
   void dispose() {
-    
+    socketService.socket.off('refresh');
     
     super.dispose();
   }

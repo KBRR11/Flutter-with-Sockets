@@ -1,10 +1,10 @@
-import 'dart:async';
+
 
 import 'package:chat_app_socket/services/auth_service.dart';
 import 'package:chat_app_socket/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chat_app_socket/global/enviroment.dart';
+import 'package:chat_app_socket/global/local_enviroment.dart';
 
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
